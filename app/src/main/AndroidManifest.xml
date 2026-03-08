@@ -41,7 +41,7 @@
 
         <receiver
             android:name=".MyBroadcastReceiver"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.school_of_company.CUSTOM_ACTION" />
             </intent-filter>
