@@ -106,7 +106,7 @@ intent.category.LAUNCHER : 앱의 아이콘이 앱 런처에 표시
 
 **Extra Data(컴포넌트 실행을 요청할 때 데이터를 함께 전달)**   
 
-![Extra Data](image.png)
+![Extra Data](image/intent_extra_data_image.png)
 
 * 키-값 쌍으로 Intent에 부가 데이터를 실어 전달한다.
 * data 전달 : ```putExtra```
