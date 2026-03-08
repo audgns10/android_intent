@@ -7,6 +7,7 @@
 > 인텐트 유형   
 > 인텐트 빌드   
 > 암시적 인텐트 수신
+> adb 명령어를 활용한 테스트
 
 <br>
 
@@ -252,4 +253,50 @@ detectAll()을 사용하면 해당 검사도 포함된다.
         </intent-filter>
     </activity>
 
-    ```
+<br><br><br>
+
+### 4. ADB 터미널을 이용한 인텐트 테스트
+개발 중 UI 버튼을 일일이 누르지 않고도, 터미널에서 `adb` 명령어를 통해 인텐트의 동작을 직접 검증할 수 있다.
+이는 외부 앱이 내 앱을 호출하는 상황을 시뮬레이션하기에 매우 유용하다.
+
+#### 1) 명시적 인텐트 테스트 (특정 화면 바로 열기)
+앱의 메인 화면을 거치지 않고 `DetailActivity`를 직접 호출하며 데이터를 전달한다.(exported=true 변경후)
+```bash
+adb shell 'am start -n com.school_of_company.intent_sample_project/.DetailActivity --es "EXTRA_TITLE" "화면이동 테스트" --ei "EXTRA_ID" 123'
+```
+* `-n`: 패키지명/클래스명 지정
+* `--es`: String 데이터 전달 (Key Value)
+* `--ei`: Int 데이터 전달 (Key Value)
+
+<br>
+
+
+#### 2) 암시적 인텐트 테스트 (공유 수신 확인)
+시스템에 공유 인텐트를 날려 내 앱의 `ShareActivity`가 목록에 뜨고 데이터를 잘 받는지 확인한다.(exported=true 변경후)
+```bash
+adb shell 'am start -a android.intent.action.SEND -t "text/plain" --es "android.intent.extra.TEXT" "텍스트 공유 테스트" com.school_of_company.intent_sample_project'
+```
+* `-a`: 인텐트 액션 지정
+* `-t`: MIME 타입 지정
+* 마지막 부분에 패키지명을 추가하면 바로 우리 앱으로 연결됩니다.
+
+<br>
+
+
+#### 3) 브로드캐스트 리시버 테스트
+앱이 백그라운드에 있더라도 커스텀 브로드캐스트를 쏴서 리시버가 작동(Toast 출력)하는지 확인한다.(exported=true 변경후)
+```bash
+adb shell 'am broadcast -a com.school_of_company.CUSTOM_ACTION --es "EXTRA_MESSAGE" "시그널 테스트"'
+```
+* `am broadcast`: 브로드캐스트 전송 명령어
+* `-a`: 매니페스트에 등록한 커스텀 액션명
+
+<br>
+
+#### 4) 보안 확인 (exported=false)
+`exported=false`로 설정된 컴포넌트는 외부 앱이 직접 호출할 수 없다..(exported=true 변경후)
+```bash
+# 1. AndroidManifest.xml에서 DetailActivity를 다시 exported="false"로 수정
+# 2. 아래 명령어를 실행하여 Permission Denial 에러가 발생하는지 확인
+adb shell 'am start -n com.school_of_company.intent_sample_project/.DetailActivity'
+```
