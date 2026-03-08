@@ -22,6 +22,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".DetailActivity"
+            android:exported="false"
+            android:label="Detail" />
+
+        <activity
+            android:name=".ShareActivity"
+            android:exported="true"
+            android:label="Share Handler">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".MyBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.school_of_company.CUSTOM_ACTION" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
