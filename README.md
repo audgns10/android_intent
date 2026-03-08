@@ -8,6 +8,7 @@
 > 인텐트 빌드   
 > 암시적 인텐트 수신
 > adb 명령어를 활용한 테스트
+> 테스트 스크립트를 활용한 통합 테스트
 
 <br>
 
@@ -286,7 +287,6 @@ adb shell 'am start -a android.intent.action.SEND -t "text/plain" --es "android.
 
 <br>
 
-
 #### 3) 브로드캐스트 리시버 테스트
 앱이 백그라운드에 있더라도 커스텀 브로드캐스트를 쏴서 리시버가 작동(Toast 출력)하는지 확인한다.(exported=true 변경후)
 ```bash
@@ -304,3 +304,22 @@ adb shell 'am broadcast -a com.school_of_company.CUSTOM_ACTION --es "EXTRA_MESSA
 # 2. 아래 명령어를 실행하여 Permission Denial 에러가 발생하는지 확인
 adb shell 'am start -n com.school_of_company.intent_sample_project/.DetailActivity'
 ```
+
+<br><br><br>
+
+### 5. 테스트 스크립트를 활용한 통합 테스트
+개별 명령어를 직접 입력하는 대신, 번호 선택형 메뉴를 통해 편리하게 테스트할 수 있는 파이썬 스크립트를 제공한다.
+이 스크립트는 `uv`를 활용하여 별도의 환경 설정 없이 즉시 실행 가능하다.
+
+#### 실행 방법
+터미널에서 프로젝트 루트 디렉토리로 이동한 후 아래 명령어를 입력한다.
+```bash
+uv run script/intent_test.py
+```
+
+#### 메뉴 구성
+*   **1. 명시적 인텐트 테스트:** `DetailActivity`를 직접 호출하며 데이터를 전달한다.
+*   **2. 암시적 인텐트 테스트:** 시스템 공유 액션을 호출하여 `ShareActivity`가 목록에 뜨는지 확인한다.
+*   **3. 브로드캐스트 리시버 테스트:** 커스텀 액션을 패키지명과 함께 명시적으로 쏘아 `MyBroadcastReceiver`가 작동하는지 확인한다.
+*   **4. 보안 확인:** `exported="false"`로 설정된 컴포넌트 호출 시 `Permission Denial` 에러가 발생하는지 확인한다.
+*   **0. 종료:** 테스트를 중단하고 프로그램을 종료한다.
